@@ -1,5 +1,6 @@
 (function (bs) {
 
+    var config = JSON.parse('%CONFIG%');
     var EVENT_NAME = "history:change";
 
     var sockets = bs.socket;
@@ -16,7 +17,7 @@
     })(window.history);
 
     window.onpopstate = history.onpushstate = function (out, args) {
-        if(args){
+        if(args && config.ghostMode){
             sockets.emit(EVENT_NAME, {path: args[2]});
         }
     }
@@ -49,7 +50,7 @@
         var elem;
         if (document.querySelector) {
 
-            elem = document.querySelector('%SELECTOR%');
+            elem = document.querySelector(config.selector);
 
             if (!elem) {
                 return;

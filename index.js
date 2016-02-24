@@ -24,7 +24,8 @@ var plugin = {
 
 const defaults = {
     selector: "[ng-app]",
-    history: {}
+    history: {},
+    ghostMode: true
 };
 
 /**
@@ -34,14 +35,12 @@ const defaults = {
 module.exports = function (opts) {
     var config   = merger.set({simple: true}).merge(defaults, opts);
     var clientJs = require("fs").readFileSync(__dirname + CLIENT_JS, "utf-8");
-    plugin.hooks["client:js"] = clientJs.replace("%SELECTOR%", config.selector);
-
+    plugin.hooks["client:js"] = clientJs.replace('%CONFIG%', JSON.stringify(config));
+    
     if (config.history) {
         plugin.hooks["server:middleware"] = function () {
             return historyApiFallback(config.history);
         };
     }
-
-
     return plugin;
 }
